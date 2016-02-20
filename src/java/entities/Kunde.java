@@ -1,8 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ /*
+Copyright [2016] [Katharina Kroener]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
  */
+
 package entities;
 
 import java.io.Serializable;
@@ -22,7 +33,6 @@ public class Kunde implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //@Min(10000)
     private Long id;
  
     private int kundennummer;
@@ -183,6 +193,9 @@ public class Kunde implements Serializable {
 
     @Override
     public String toString() {
+        if(bemerkungen != ""){
+            bemerkungen = ", " + bemerkungen;
+        }
         Calendar cal = Calendar.getInstance();
         cal.setTime(geburtsdatum);
         int tag = cal.get(Calendar.DAY_OF_MONTH);
@@ -193,7 +206,7 @@ public class Kunde implements Serializable {
                 + tag + "." + monat + "." + jahr + ", "
                 + strasse + " " + hausnummer + ", " + postleitzahl +" "+ ort + ", Telefon: "
                 + telefonnummer + ", "
-                + vertragsart + "-Vertrag, " + vertragslaufzeit + " Monate Vertragslaufzeit "
+                + vertragsart + "-Vertrag, " + vertragslaufzeit + " Monate Vertragslaufzeit"
                 + bemerkungen;
     }
 

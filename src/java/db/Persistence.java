@@ -1,19 +1,27 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+Copyright [2016] [Katharina Kroener]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
  */
+
 package db;
 
 import entities.Kunde;
 import entities.Schrank;
-import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
 /**
  *
@@ -49,10 +57,6 @@ public class Persistence extends AbstractPersistence<Kunde> {
     public List<Schrank> findAlleSchraenke(){
         return manager.createQuery("SELECT s FROM Schrank s", Schrank.class).getResultList();
     }
-    /*
-    public Object merge(Object object){
-        return manager.merge(object);
-    }*/
     
     public List<Kunde> findEingecheckteKunden(){
         return manager.createQuery("SELECT k FROM Kunde k WHERE k.eingecheckt = true").getResultList();
@@ -73,18 +77,29 @@ public class Persistence extends AbstractPersistence<Kunde> {
     }
     
     public Schrank findSchrankByKundenId(long id){
-        return (Schrank) manager.createQuery("SELECT s FROM Schrank s WHERE s.kunde.id := id").getSingleResult();
+        
+        List<Schrank> listSchrank = findAlleSchraenke();
+        if(listSchrank.isEmpty()){
+            return null;
+        }else{
+            for(int i = 0; i < listSchrank.size(); i++){
+                    if(listSchrank.get(i).getId()==id){
+                        return listSchrank.get(i);
+                    }
+            }
+            return null;
+        }
     }
     
     public void auschecken(Kunde k){  
-        List<Schrank> allSchraenke = this.findAlleSchraenke();
+        List<Schrank> allSchraenke = findAlleSchraenke();
         Kunde tmp;
         for(int i=0;i<allSchraenke.size();i++){
             tmp = allSchraenke.get(i).getKunde();
             if(tmp != null){
                 if(allSchraenke.get(i).getKunde().equals(k)){
                     allSchraenke.get(i).setKunde(null);
-                    this.mergeSchrank(allSchraenke.get(i));
+                    mergeSchrank(allSchraenke.get(i));
                     
                     break;
                 }
@@ -94,14 +109,30 @@ public class Persistence extends AbstractPersistence<Kunde> {
         manager.merge(k);
     }
     
-    /*public List<Kunde> findAlleKunden(){
-        return manager.createQuery("SELECT k FROM Kunde k", Kunde.class).getResultList();
-    }*/
-    
     public void schrankZuweisen(int kundennummer, Schrank schrank){ 
         Kunde k = findKundeByKundennummer(kundennummer);
         schrank.setKunde(k);
+        schraenkeZuruecksetzen();
+        schrank.setLetzterVergebenerSchrank(true);
         manager.merge(schrank);
+    }
+    
+    public Schrank findLetzterVergebenerSchrank(){
+        List<Schrank> listSchrank = this.findAlleSchraenke();
+        for(Schrank s : listSchrank){
+            if(s.isLetzterVergebenerSchrank()){
+                return s;
+            }
+        }
+        return null;
+    }
+    
+    public void schraenkeZuruecksetzen(){
+        List<Schrank> listSchrank = findAlleSchraenke();
+        for(Schrank s : listSchrank){
+            s.setLetzterVergebenerSchrank(false);
+            mergeSchrank(s);
+        }
     }
     
     public Kunde findKundeByKundennummer(int kundennummer){
@@ -116,13 +147,6 @@ public class Persistence extends AbstractPersistence<Kunde> {
             }
             return null;
         }
-        
-        /*if((Kunde) manager.createQuery("SELECT k FROM Kunde k WHERE k.kundennummer := kundennummer").getSingleResult() !=null){
-            return (Kunde) manager.createQuery("SELECT k FROM Kunde k WHERE k.kundennummer := kundennummer").getSingleResult();
-        }
-        else{
-            return null;
-        }*/
         
     }
     

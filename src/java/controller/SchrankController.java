@@ -1,8 +1,19 @@
  /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+Copyright [2016] [Katharina Kroener]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
  */
+
 package controller;
 
 import db.Persistence;
@@ -20,13 +31,10 @@ import javax.enterprise.context.Dependent;
 @Dependent
 public class SchrankController implements Serializable{
     
-   // private List<Schrank> schrankList;
     
     @EJB
     private Persistence persistence;
     
-    
-    private int letzterVergebenerSchrank = -1;
     private int anzahlSchraenke = 100;
     
     
@@ -42,7 +50,7 @@ public class SchrankController implements Serializable{
     public void initSchrankList(){     
         if(persistence.findAlleSchraenke().isEmpty()){
             for(int i = 0; i < anzahlSchraenke; i++){
-                persistence.persistSchrank(new Schrank(i+1,null));
+                persistence.persistSchrank(new Schrank(i+1));
             }
         }
     }
@@ -54,12 +62,13 @@ public class SchrankController implements Serializable{
     public int schrankVerfuegbar(){
         int verfuegbarerSchrank = -1;
         List<Schrank> schrankList = persistence.findAlleSchraenke();
+        Schrank letzterVergebener = persistence.findLetzterVergebenerSchrank();
+        if(letzterVergebener == null){
+            return 1;
+        }
         for(int i = 0; i < anzahlSchraenke; i++){
-            if(letzterVergebenerSchrank == -1){
-                return 1;
-            }
             if(schrankList.get(i).getKunde() == null){
-                int schrankDiff = letzterVergebenerSchrank - schrankList.get(i).getSchranknummer();
+                int schrankDiff = letzterVergebener.getSchranknummer() - schrankList.get(i).getSchranknummer();
                 if(!(schrankDiff == 1 || schrankDiff == -1)){
                     return schrankList.get(i).getSchranknummer();
                 }
@@ -81,9 +90,7 @@ public class SchrankController implements Serializable{
         if(leererSchrank != -1){
             Schrank tmpSchrank = persistence.findSchrankBySchranknummer(leererSchrank);
             tmpSchrank.setKunde(persistence.findKundeByKundennummer(kundennummer));
-            letzterVergebenerSchrank = leererSchrank;
             persistence.schrankZuweisen(kundennummer, tmpSchrank);
-
         } 
         return leererSchrank;
     }
@@ -96,11 +103,9 @@ public class SchrankController implements Serializable{
      */
     public void auschecken(long id){
         Schrank auscheckSchrank = findSchrankByKundenId(id);
-        if(!(auscheckSchrank == null)){
-            persistence.findAlleSchraenke().get(auscheckSchrank.getId().intValue()).setKunde(null);
-        }
-        if(persistence.findEingecheckteKunden().isEmpty()){
-            letzterVergebenerSchrank = -1;
+        if(auscheckSchrank != null){
+            auscheckSchrank.setKunde(null);
+            persistence.mergeSchrank(auscheckSchrank);
         }
     }
     
@@ -111,8 +116,22 @@ public class SchrankController implements Serializable{
      */
     public Schrank findSchrankByKundenId(long id){
         for(Schrank s : persistence.findAlleSchraenke()){
-            if(s.getKunde().getId() == id){
-                return s;
+            if(s.getKunde() != null){
+                if(s.getKunde().getId() == id){
+                    return s;
+                }
+            }
+        }
+        return null;
+    }
+    
+    public Schrank findSchrankByKundennummer(int kundennummer){
+        List<Schrank> listSchrank = persistence.findAlleSchraenke();
+        for(Schrank s : listSchrank){
+            if(s.getKunde() != null){
+                if(s.getKunde().getKundennummer() == kundennummer){
+                    return s;
+                }
             }
         }
         return null;
@@ -125,14 +144,6 @@ public class SchrankController implements Serializable{
 
     public void setKundePersistence(Persistence persistence) {
         this.persistence = persistence;
-    }
-
-    public int getLetzterVergebenerSchrank() {
-        return letzterVergebenerSchrank;
-    }
-
-    public void setLetzterVergebenerSchrank(int letzterVergebenerSchrank) {
-        this.letzterVergebenerSchrank = letzterVergebenerSchrank;
     }
 
     public int getAnzahlSchraenke() {
