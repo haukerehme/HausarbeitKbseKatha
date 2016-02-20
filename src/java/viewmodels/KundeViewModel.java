@@ -1,4 +1,4 @@
- /*
+/*
 Copyright [2016] [Katharina Kroener]
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,6 @@ package viewmodels;
 import entities.Kunde;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -97,33 +96,58 @@ public class KundeViewModel implements Serializable{
     public KundeViewModel(){
     }
     
+    /**
+     * Speichert die Einträge der Variablen des gesuchten Kunden mithilfe der Funktion setThisValues in den lokalen Variablen und ruft die kundeController-Funktion kundenSuchErgebnis auf.
+     * @param kundennummer Es wird die Kundennummer des gesuchten Kunden übergeben.
+     * @return Es wird der String zur Navigation zur Suchergebnis-Seite zurückgegeben.
+     */
     public String kundenSuchErgebnis(int kundennummer){
         this.kundennummer = kundennummer;
-        if(kundecontroller.kundenSuchen(kundennummer)!=null){
-            setThisValues(kundecontroller.kundenSuchen(kundennummer));
+        if(kundecontroller.findKundeByKundennummer(kundennummer)!=null){
+            setThisValues(kundecontroller.findKundeByKundennummer(kundennummer));
         }
         
         this.suchErgebnis = kundecontroller.kundenSuchErgebnis(kundennummer);
         return konstanten.Navigation.SUCHERGEBNIS;
     }
     
+    /**
+     * Ruft die kundeController-Funktion checkIn auf.
+     * @param kundennummer Es wird die Kundennummer des Kunden übergeben, der eingecheckt werden soll.
+     * @return Es wird der String zur Navigation zur Ausgabe-Seite zurückgegeben.
+     */
     public String checkIn(int kundennummer){
         this.ausgabeNachricht = kundecontroller.checkIn(kundennummer);
         return konstanten.Navigation.AUSGABE;
     }
     
+    /**
+     * Ruft die kundeController-Funktion checkOut auf.
+     * @param kundennummer Es wird die Kundennummer des Kunden übergeben, der ausgecheckt werden soll.
+     * @return Es wird der String zur Navigation zur Ausgabe-Seite zurückgegeben.
+     */
     public String checkOut(int kundennummer){
         this.ausgabeNachricht = kundecontroller.checkOut(kundennummer);
         return konstanten.Navigation.AUSGABE;
     }
     
+    /**
+     * Speichert die Einträge der Variablen des gesuchten Kunden mithilfe der Funktion setThisValues in den lokalen Variablen.
+     * @param id Es wird die ID des Kunden übergeben, der bearbeitet werden soll.
+     * @return Es wird der String zur Navigation zur KundenBearbeiten-Seite zurückgegeben.
+     */
     public String zurBearbeitung(long id){
-        setThisValues(kundecontroller.getPersistence().findKundeById(id));
+        setThisValues(kundecontroller.findKundeById(id));
         return konstanten.Navigation.KUNDENBEARBEITEN;
     }
     
+    /**
+     * Speichert die Einträge der Variablen des gesuchten Kunden mithilfe der Funktion setThisValues in den lokalen Variablen und ruft die kundeController-Funktion kundenBearbeiten auf.
+     * @param id Es wird die ID des Kunden übergeben, der bearbeitet werden soll.
+     * @return Es wird der String zur Navigation zur Ausgabe-Seite zurückgegeben.
+     */
     public String kundenBearbeiten(long id){
-        Kunde k = kundecontroller.getPersistence().findKundeById(id);
+        Kunde k = kundecontroller.findKundeById(id);
         setKundeValues(k);
         kundecontroller.kundenBearbeiten(k);
         ausgabeNachricht = "Änderungen erfolgreich übernommen.";
@@ -131,12 +155,21 @@ public class KundeViewModel implements Serializable{
         return konstanten.Navigation.AUSGABE;
     }
     
+    /**
+     * Ruft die kundeController-Funktion loeschen auf.
+     * @param id Es wird die ID des Kunden übergeben, der gelöscht werden soll.
+     * @return Es wird ein String zur Navigation zur Ausgabe-Seite zurückgegeben.
+     */
     public String loeschen(long id){
         ausgabeNachricht = kundecontroller.loeschen(id);
         zuruecksetzen();
         return konstanten.Navigation.AUSGABE;
     }
     
+    /**
+     * Erstellt einen neuen Kunden mit einer Kundennummer, die mithilfe der kundeController-Funktion freieKundennummer ermittelt wurde und gibt diesen Kunden an die kundeController-Funktion neuerKunde.
+     * @return Es wird ein String zur Navigation zur KundeAngelegt-Seite zurückgegeben.
+     */
     public String neuerKunde(){ 
         int freieKundennummer = kundecontroller.freieKundennummer();
         Kunde k = new Kunde(freieKundennummer,vorname,nachname,geburtsdatum,strasse,ort,hausnummer,postleitzahl,bemerkungen,vertragsart,vertragslaufzeit,telefonnummer,false);
@@ -145,7 +178,10 @@ public class KundeViewModel implements Serializable{
         return konstanten.Navigation.KUNDEANGELEGT;
     }
     
-    
+    /**
+     * Setzt die lokalen Variablen auf die Werte des übergebenen Kunden.
+     * @param k Es wird der Kunde übergeben, dessen Werte in den lokalen Variablen gespeichert werden sollen.
+     */
     public void setThisValues(Kunde k){
         id = k.getId();
         kundennummer = k.getKundennummer();
@@ -163,6 +199,10 @@ public class KundeViewModel implements Serializable{
         vertragslaufzeit = k.getVertragslaufzeit();
     }
     
+    /**
+     * Speichert die Werte der lokalen Variablen in den Variablen des übergebenen Kunden.
+     * @param k Es wird der Kunde übergeben, dessen Variablen-Werte geändert werden sollen.
+     */
     public void setKundeValues(Kunde k){
         k.setKundennummer(kundennummer);
         k.setVorname(vorname);
@@ -179,6 +219,9 @@ public class KundeViewModel implements Serializable{
         k.setVertragslaufzeit(vertragslaufzeit);
     }
     
+    /**
+     * Setzt die Werte der lokalen Variablen auf Default-Werte zurück.
+     */
     public void zuruecksetzen(){
         kundennummer = 0;
         vorname = "";
@@ -193,6 +236,55 @@ public class KundeViewModel implements Serializable{
         eingecheckt = false;
         vertragsart = "";
         vertragslaufzeit = 0;
+    }
+    
+    
+    /**
+     * Setzt die lokalen Variablen zurück und navigiert zur Checkin-Seite
+     * @return Es wird ein String zur Navigation zur Checkin-Seite zurückgegeben.
+     */
+    public String zumCheckin(){
+        zuruecksetzen();
+        return konstanten.Navigation.CHECKIN;
+    }
+    
+    /**
+     * Setzt die lokalen Variablen zurück und navigiert zur Checkout-Seite
+     * @return Es wird ein String zur Navigation zur Checkout-Seite zurückgegeben.
+     */
+    public String zumCheckout(){
+        zuruecksetzen();
+        return konstanten.Navigation.CHECKOUT;
+    }
+    
+    /**
+     * Navigiert zur NeuerKunde-Seite.
+     * @return Es wird ein String zur Navigation zur NeuerKunde-Seite zurückgegeben.
+     */
+    public String zumAnlegen(){
+        return konstanten.Navigation.NEUERKUNDE;
+    }
+    
+    /**
+     * Setzt die lokalen Variablen, überprüft, ob schon Kunden existieren, und navigiert dementsprechend zur Ausgabe- bzw. Kundensuch-Seite
+     * @return Es wird ein String zur Navigation zur Ausgabe- bzw. Kundensuch-Seite zurückgegeben.
+     */
+    public String zurKundensuche(){
+        zuruecksetzen();
+        if(kundecontroller.findAlleKunden().isEmpty()){
+            ausgabeNachricht = "Es existiert noch kein Kunde.";
+            return konstanten.Navigation.AUSGABE;
+        }
+        return konstanten.Navigation.KUNDENSUCHEN;
+    }
+    
+    /**
+     * Setzt die lokalen Variablen zurück und navigiert zur Start-Seite
+     * @return Es wird ein String zur Navigation zur Start-Seite zurückgegeben.
+     */
+    public String zurStartseite(){
+        zuruecksetzen();
+        return konstanten.Navigation.STARTSEITE;
     }
 
     public int getKundennummer() {
@@ -323,11 +415,6 @@ public class KundeViewModel implements Serializable{
         this.eingecheckt = eingecheckt;
     }
     
-    public List<Kunde> eingecheckteKunden(){
-        return this.kundecontroller.eingecheckteKunden();
-    }
-    
-    
     public long getId(){
         return id;
     }
@@ -336,34 +423,5 @@ public class KundeViewModel implements Serializable{
         this.id = id;
     }
     
-    
-    public String zumCheckin(){
-        zuruecksetzen();
-        return konstanten.Navigation.CHECKIN;
-    }
-    
-    
-    public String zumCheckout(){
-        zuruecksetzen();
-        return konstanten.Navigation.CHECKOUT;
-    }
-    
-    public String zumAnlegen(){
-        return konstanten.Navigation.NEUERKUNDE;
-    }
-    
-    public String zurKundensuche(){
-        zuruecksetzen();
-        if(kundecontroller.getPersistence().findAll().isEmpty()){
-            ausgabeNachricht = "Es existiert noch kein Kunde.";
-            return konstanten.Navigation.AUSGABE;
-        }
-        return konstanten.Navigation.KUNDENSUCHEN;
-    }
-    
-    public String zurStartseite(){
-        zuruecksetzen();
-        return konstanten.Navigation.STARTSEITE;
-    }
 }
 

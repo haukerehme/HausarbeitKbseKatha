@@ -41,6 +41,32 @@ public class Schrank implements Serializable {
     
     public boolean letzterVergebenerSchrank;
 
+    /**
+     * Überschreibt die equals-Methode, um Objekte mit Schränken vergleichen zu können.
+     * @param object Es wird das Objekt übergeben, das mit dem Schrank verglichen werden soll.
+     * @return Es wird zurückgegeben, ob das Objekt und der Schrank gleich sind.
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Schrank)) {
+            return false;
+        }
+        Schrank other = (Schrank) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Überschreibt die toString-Methode, um Schränke strukturiert ausgeben zu können.
+     * @return Es wird ein String mit der gewünschten Ausgabe zurückgegeben.
+     */
+    @Override
+    public String toString() {
+        return "Schrank Nr. " + id + " ]";
+    }
+    
     public boolean isLetzterVergebenerSchrank() {
         return letzterVergebenerSchrank;
     }
@@ -82,23 +108,6 @@ public class Schrank implements Serializable {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
         return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Schrank)) {
-            return false;
-        }
-        Schrank other = (Schrank) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Schrank Nr. " + id + " ]";
     }
 
     public Schrank(int schranknummer) {

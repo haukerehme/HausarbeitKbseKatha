@@ -67,6 +67,46 @@ public class Kunde implements Serializable {
         this.telefonnummer = telefonnummer;
         this.eingecheckt = eingecheckt;
     }
+    
+    /**
+     * Vergleicht ein Objekt mit dem Kunden, auf dem die Funktion aufgerufen wird.
+     * @param object Es wird ein Objekt übergeben, das verglichen werden soll.
+     * @return Gibt zurück, ob das übergebene Objekt gleich dem Objekt ist, auf dem die Methode aufgerufen wurde.
+     */
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Kunde)) {
+            return false;
+        }
+        Kunde other = (Kunde) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Fügt die Variablen des Kunden zusammen, um sie strukturiert ausgeben zu können.
+     * @return Es wird ein String mit den zusammengefügten Variablen zurückgegeben.
+     */
+    @Override
+    public String toString() {
+        if(!bemerkungen.equals("") && bemerkungen != null){
+            bemerkungen = ", " + bemerkungen;
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(geburtsdatum);
+        int tag = cal.get(Calendar.DAY_OF_MONTH);
+        int monat = cal.get(Calendar.MONTH)+1;
+        int jahr = cal.get(Calendar.YEAR);
+        return "Kunde: " + kundennummer + ", "
+                + vorname + " " + nachname + ", "
+                + tag + "." + monat + "." + jahr + ", "
+                + strasse + " " + hausnummer + ", " + postleitzahl +" "+ ort + ", Telefon: "
+                + telefonnummer + ", "
+                + vertragsart + "-Vertrag, " + vertragslaufzeit + " Monate Vertragslaufzeit"
+                + bemerkungen;
+    }
 
     public Date getGeburtsdatum() {
         return geburtsdatum;
@@ -177,37 +217,6 @@ public class Kunde implements Serializable {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
         return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Kunde)) {
-            return false;
-        }
-        Kunde other = (Kunde) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        if(bemerkungen != ""){
-            bemerkungen = ", " + bemerkungen;
-        }
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(geburtsdatum);
-        int tag = cal.get(Calendar.DAY_OF_MONTH);
-        int monat = cal.get(Calendar.MONTH)+1;
-        int jahr = cal.get(Calendar.YEAR);
-        return "Kunde: " + kundennummer + ", "
-                + vorname + " " + nachname + ", "
-                + tag + "." + monat + "." + jahr + ", "
-                + strasse + " " + hausnummer + ", " + postleitzahl +" "+ ort + ", Telefon: "
-                + telefonnummer + ", "
-                + vertragsart + "-Vertrag, " + vertragslaufzeit + " Monate Vertragslaufzeit"
-                + bemerkungen;
     }
 
     public boolean isEingecheckt() {

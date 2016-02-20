@@ -17,6 +17,7 @@ limitations under the License.
 package controller;
 
 import db.Persistence;
+import entities.Kunde;
 import entities.Schrank;
 import java.io.Serializable;
 import java.util.List;
@@ -44,7 +45,7 @@ public class SchrankController implements Serializable{
     
     
     /**
-     * Initialisiert die Schränke
+     * Überprüft, ob bereits Schränke erzeugt wurden und erstellt gegebenenfalls eine vorgegebene Anzahl von Schränken.
      */
     @PostConstruct
     public void initSchrankList(){     
@@ -56,7 +57,7 @@ public class SchrankController implements Serializable{
     }
     
     /**
-     *
+     * Überprüft, ob es noch einen freien Schrank gibt und sorgt gegebenenfalls dafür, dass nacheinander eincheckende Kunde keine direkt benachbarten Schränke bekommen.
      * @return Gibt die Nummer eines verfügbaren Schrankes zurück
      */
     public int schrankVerfuegbar(){
@@ -81,9 +82,10 @@ public class SchrankController implements Serializable{
     }
     
     /**
-     *
-     * @param kundennummer
-     * @return
+     * Überprüft zunächst mithilfe der Funktion schrankVerfuegbar, ob es noch einen leeren Schrank gibt. 
+     * Weist einem Kunden gegebenenfalls den verfügbaren Schrank zu, indem die persistence-Funktion schrankZuweisen aufgerufen wird.
+     * @param kundennummer Es wird die Kundennummer des Kunden übergeben, dem ein freier Schrank zugewiesen werden soll.
+     * @return Es wird die Schranknummer des verfügbaren Schrankes zurückgegeben.
      */
     public int einchecken(int kundennummer){
         int leererSchrank = schrankVerfuegbar();
@@ -98,45 +100,35 @@ public class SchrankController implements Serializable{
     
     
     /**
-     *
-     * @param id
+     * Weist dem beim Check-Out frei werdenden Schrank null zu und übernimmt diese Änderung mithilfe der persistence-Funktion mergeSchrank in die Datenbank.
+     * @param k Es wird der Kunde übergeben, der ausgecheckt werden soll.
      */
-    public void auschecken(long id){
-        Schrank auscheckSchrank = findSchrankByKundenId(id);
+    public void auschecken(Kunde k){
+        Schrank auscheckSchrank = findSchrankByKundenId(k.getId());
         if(auscheckSchrank != null){
             auscheckSchrank.setKunde(null);
             persistence.mergeSchrank(auscheckSchrank);
         }
+        persistence.auschecken(k);
     }
     
     /**
-     *
-     * @param id
-     * @return
+     * Ermittelt einen Schrank anhand der Kunden-ID, indem die gleichnamige persistence-Funktion aufgerufen wird.
+     * @param id Es wird die ID des Kunden übergeben, für den der zugewiesene Schrank gefunden werden soll.
+     * @return Es wird das Ergebnis der persistence-Funktion zurückgegeben, das den entsprechenden Schrank beinhaltet.
      */
     public Schrank findSchrankByKundenId(long id){
-        for(Schrank s : persistence.findAlleSchraenke()){
-            if(s.getKunde() != null){
-                if(s.getKunde().getId() == id){
-                    return s;
-                }
-            }
-        }
-        return null;
+        return persistence.findSchrankByKundenId(id);
     }
     
+    /**
+     * Ermittelt einen Schrank anhand der Kundennummer, indem die gleichnamige persistence-Funktion aufgerufen wird.
+     * @param kundennummer Es wird die Kundennummer des Kunden übergeben, für den der zugewiesene Schrank gefunden werden soll.
+     * @return Es wird das Ergebnis der persistence-Funktion zurückgegeben, das den entsprechenden Schrank beinhaltet.
+     */
     public Schrank findSchrankByKundennummer(int kundennummer){
-        List<Schrank> listSchrank = persistence.findAlleSchraenke();
-        for(Schrank s : listSchrank){
-            if(s.getKunde() != null){
-                if(s.getKunde().getKundennummer() == kundennummer){
-                    return s;
-                }
-            }
-        }
-        return null;
+        return persistence.findSchrankByKundennummer(kundennummer);
     }
-
 
     public Persistence getKundePersistence() {
         return persistence;

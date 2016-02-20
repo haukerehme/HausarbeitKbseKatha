@@ -19,7 +19,6 @@ package controller;
 import db.Persistence;
 import entities.Kunde;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.Dependent;
@@ -93,15 +92,6 @@ public class KundeController implements Serializable{
     }
     
     /**
-     * Sucht einen Kunden, indem die persistence-Funktion findKundeByKundennummer aufgerufen wird.
-     * @param kundennummer Es wird die Kundennummer des gesuchten Kunden übergeben.
-     * @return Es wird das Ergebnis der persistence-Funktion findKundeByKundennummer, das dem gesuchten Kunden entspricht, zurückgegeben.
-     */
-    public Kunde kundenSuchen(int kundennummer){
-        return persistence.findKundeByKundennummer(kundennummer);
-    }
-    
-    /**
      * Überprüft, ob ein Kunde eingecheckt werden kann und ruft gegebenenfalls die persistence-Funktion einchecken auf.
      * @param kundennummer Es s wird eine Nachricht zurückgegeben, in der das Ergebnwird die Kundennummer des Kunden übergeben, der eingecheckt werden soll.
      * @return Es wird eine Nachricht zurückgegeben, in der das Ergebnis des Eincheckens beschrieben wird.
@@ -146,6 +136,7 @@ public class KundeController implements Serializable{
         }
         else{
             persistence.auschecken(k);
+            schrankController.auschecken(k);
             return "Kunde erfolgreich ausgecheckt";
         }
     }
@@ -159,25 +150,43 @@ public class KundeController implements Serializable{
     }
     
     /**
-     *
-     * @return
+     * Ermittelt einen Kunden anhand seiner Kundennummer, indem die persistence-Funktion findKundeByKundennummer aufgerufen wird.
+     * @param kundennummer Es wird die Kundennummer übergeben, für die der entsprechende Kunde ermittelt werden soll.
+     * @return Es wird das Ergebnis der persistence-Funktion findKundeByKundennummer zurückgegeben, die den gesuchten Kunden beinhaltet.
+     */
+    public Kunde findKundeByKundennummer(int kundennummer){
+        return persistence.findKundeByKundennummer(kundennummer);
+    }
+    
+    /**
+     * Ermittelt einen Kunden anhand seiner ID, indem die persistence-Funktion findKundeByKundennummer aufgerufen wird.
+     * @param id Es wird die ID übergeben, für die der entsprechende Kunde ermittelt werden soll.
+     * @return Es wird das Ergebnis der persistence-Funktion findKundeByKundennummer zurückgegeben, die den gesuchten Kunden beinhaltet.
+     */
+    public Kunde findKundeById(long id){
+        return persistence.findKundeById(id);
+    }
+    
+    /**
+     * Ermittelt alle existierenden Kunden, indem die persistence-Funktion findAll aufgerufen wird.
+     * @return Es wird der Rückgabewert der persistence-Funktion findAll zurückgegeben, der einer Liste aller Kunden entspricht.
+     */
+    public List<Kunde> findAlleKunden(){
+        return persistence.findAll();
+    }
+    
+    /**
+     * Ermittelt eine freie Kundennummer, indem die persistence-Funktion findFreieKundennummer aufgerufen wird.
+     * @return Es wird der Rückgabewert der persistence-Funktion findFreieKundennummer zurückgegeben, der eine freie Kundennummer beinhaltet.
      */
     public int freieKundennummer(){
         return persistence.findFreieKundennummer();
     }
 
-    /**
-     *
-     * @return
-     */
     public Persistence getPersistence() {
         return persistence;
     }
 
-    /**
-     *
-     * @param persistence
-     */
     public void setPersistence(Persistence persistence) {
         this.persistence = persistence;
     }
