@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f ="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Kunden bearbeiten</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <h:outputText id="KundenbearbeitenseiteKundeAusgabe" value="#{kvm.suchErgebnis}" />
+            <br />
+            <h:outputText id="KundenbearbeitenseiteVornameAusgabe" value="Vorname: " />
+            <br />
+            <h:inputText id="KundenbearbeitenseiteVornameEingabe" value="#{kvm.vorname}" />
+            <br />
+            <h:outputText id="KundenbearbeitenseiteNachnameAusgabe" value="Nachname: " />
+            <br />
+            <h:inputText id="KundenbearbeitenseiteNachnameEingabe" value="#{kvm.nachname}"  />
+            <br />
+            <h:outputText id="KundenbearbeitenseiteGeburtsdatumAusgabe" value="Geburtsdatum: " />
+            <br />
+            <h:inputText id="KundenbearbeitenseiteGeburtsdatumEingabe" value="#{kvm.geburtsdatum}" converterMessage="Das Datum muss ich Format TT.MM.JJJJ angegeben werden.">
+                <f:convertDateTime pattern="dd.MM.yyyy"/>
+            </h:inputText>
+            <br />
+            <h:outputText id="KundenbearbeitenseiteStrasseAusgabe" value="Strasse: " />
+            <br />
+            <h:inputText id="KundenbearbeitenseiteStrasseEingabe" value="#{kvm.strasse}" />
+            <br />
+            <h:outputText id="KundenbearbeitenseiteHausnummerAusgabe" value="Hausnummer: " />
+            <br />
+            <h:inputText id="KundenbearbeitenseiteHausnummerEingabe" value="#{kvm.hausnummer}" />
+            <br />
+            <h:outputText id="KundenbearbeitenseitePostleitzahlAusgabe" value="Postleitzahl: " />
+            <br />
+            <h:inputText id="KundenbearbeitenseitePostleitzahlEingabe" value="#{kvm.postleitzahl}" />
+            <br />
+            <h:outputText id="KundenbearbeitenseiteOrtAusgabe" value="Ort " />
+            <br />
+            <h:inputText id="KundenbearbeitenseiteOrtEingabe" value="#{kvm.ort}" />
+            <br />
+            <h:outputText id="KundenbearbeitenseiteTelefonnummerAusgabe" value="Telefonnummer: " />
+            <br />
+            <h:inputText id="KundenbearbeitenseiteTelefonnummerEingabe" value="#{kvm.telefonnummer}" />
+            <br />
+            <h:outputText id="KundenbearbeitenseiteVertragsartAusgabe" value="Vertragsart: " />
+            <br />
+            <h:inputText id="KundenbearbeitenseiteVertragsartEingabe" value="#{kvm.vertragsart}" />
+            <br />
+            <h:outputText id="KundenbearbeitenseiteVertragslaufzeitAusgabe" value="Vertragslaufzeit: " />
+            <br />
+            <h:inputText id="KundenbearbeitenseiteVertragslaufzeitEingabe" value="#{kvm.vertragslaufzeit}" />
+            <br />
+            <h:outputText id="KundenbearbeitenseiteBemerkungenAusgabe" value="Bemerkungen: " />
+            <br />
+            <h:inputText id="KundenbearbeitenseiteBemerkungenEingabe" value="#{kvm.bemerkungen}" />
+            <br />
+            <h:commandButton id="KundenbearbeitenseiteUebernehmenButton" value="Übernehmen" action="#{kvm.kundenBearbeiten(kvm.id)}" />
+            <br />
+        </h:form>
+        <h:form>
+            <h:commandLink id="KundenbearbeitenseiteStartseiteLink" value="Zum Hauptmenü" action="#{kvm.zurStartseite()}" />
+        </h:form>
+    </h:body>
+</html>
+

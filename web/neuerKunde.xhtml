@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f ="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Neuen Kunden anlegen</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <h:outputText id="NeuerkundeseiteVornameAusgabe" value="Vorname: " />
+            <br />
+            <h:inputText id="NeuerkundeseiteVornameEingabe" value="#{kvm.vorname}" />
+            <br />
+            <h:outputText id="NeuerkundeseiteNachnameAusgabe" value="Nachname: " />
+            <br />
+            <h:inputText id="NeuerkundeseiteNachnameEingabe" value="#{kvm.nachname}" />
+            <br />
+            <h:outputText id="NeuerkundeseiteGeburtsdatumAusgabe" value="Geburtsdatum: " />
+            <br />
+            <h:inputText id="NeuerkundeseiteGeburtsdatumEingabe" value="#{kvm.geburtsdatum}" converterMessage="Das Datum muss ich Format TT.MM.JJJJ angegeben werden." >
+                <f:convertDateTime id="NeuerkundeseiteConvertDateTime" pattern="dd.MM.yyyy"/>
+            </h:inputText>
+            <br />
+            <h:outputText id="NeuerkundeseiteStrasseAusgabe" value="Strasse: " />
+            <br />
+            <h:inputText id="NeuerkundeseiteStrasseEingabe" value="#{kvm.strasse}" />
+            <br />
+            <h:outputText id="NeuerkundeseiteHausnummerAusgabe" value="Hausnummer: " />
+            <br />
+            <h:inputText id="NeuerkundeseiteHausnummerEingabe" value="#{kvm.hausnummer}" />
+            <br />
+            <h:outputText id="NeuerkundeseitePostleitzahlAusgabe" value="Postleitzahl: " />
+            <br />
+            <h:inputText id="NeuerkundeseitePostleitzahlEingabe" value="#{kvm.postleitzahl}" />
+            <br />
+            <h:outputText id="NeuerkundeseiteOrtAusgabe" value="Ort " />
+            <br />
+            <h:inputText id="NeuerkundeseiteOrtEingabe" value="#{kvm.ort}" />
+            <br />
+            <h:outputText id="NeuerkundeseiteTelefonnummerAusgabe" value="Telefonnummer: " />
+            <br />
+            <h:inputText id="NeuerkundeseiteTelefonnummerEingabe" value="#{kvm.telefonnummer}" />
+            <br />
+            <h:outputText id="NeuerkundeseiteVertragsartAusgabe" value="Vertragsart: " />
+            <br />
+            <h:inputText id="NeuerkundeseiteVertragsartEingabe" value="#{kvm.vertragsart}" />
+            <br />
+            <h:outputText id="NeuerkundeseiteVertragslaufzeitAusgabe" value="Vertragslaufzeit: " />
+            <br />
+            <h:inputText id="NeuerkundeseiteVertragslaufzeitEingabe" value="#{kvm.vertragslaufzeit}" />
+            <br />
+            <h:outputText id="NeuerkundeseiteBemerkungenAusgabe" value="Bemerkungen: " />
+            <br />
+            <h:inputText id="NeuerkundeseiteBemerkungenEingabe" value="#{kvm.bemerkungen}" />
+            <br />
+            <h:commandButton id="NeuerkundeseiteUebernehmenButton" value="Übernehmen" action="#{kvm.neuerKunde()}" />
+        </h:form>
+        <h:form>
+            <h:commandLink id="NeuerkundeseiteStartseiteLink" value="Zum Hauptmenü" action="#{kvm.zurStartseite()}" />
+        </h:form>
+    </h:body>
+</html>
+

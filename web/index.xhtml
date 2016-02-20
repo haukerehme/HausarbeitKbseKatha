@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f ="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>FitIn Kundenverwaltung</title>
+    </h:head>
+    <h:body>
+        
+        <h:form>
+            <br />
+            <h:commandLink id="StartseiteCheckInLink" value="Check-In" action="#{kvm.zumCheckin()}" />
+            <br />
+            <h:commandLink id="StartseiteCheckOutLink" value="Check-Out" action="#{kvm.zumCheckout()}" />
+            <br />
+            <h:commandLink id="StartseiteNeuerKundeLink" value="Neuen Kunden anlegen" action="#{kvm.zumAnlegen()}" />
+            <br />
+            <h:commandLink id="StartseiteKundenSuchenLink" value="Kunden suchen" action="#{kvm.zurKundensuche()}" />
+        </h:form>
+    </h:body>
+</html>
+
