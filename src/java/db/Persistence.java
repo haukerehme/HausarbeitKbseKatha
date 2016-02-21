@@ -105,7 +105,7 @@ public class Persistence extends AbstractPersistence<Kunde> {
         schrank.setKunde(k);
         schraenkeZuruecksetzen();
         schrank.setLetzterVergebenerSchrank(true);
-        manager.merge(schrank);
+        mergeSchrank(schrank);
     }
     
     /**
@@ -189,7 +189,7 @@ public class Persistence extends AbstractPersistence<Kunde> {
      * @return Es wird der zuletzt vergebene Schrank zurückgegeben.
      */
     public Schrank findLetzterVergebenerSchrank(){
-        List<Schrank> listSchrank = this.findAlleSchraenke();
+        List<Schrank> listSchrank = findAlleSchraenke();
         for(Schrank s : listSchrank){
             if(s.isLetzterVergebenerSchrank()){
                 return s;

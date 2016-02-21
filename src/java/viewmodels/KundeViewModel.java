@@ -66,7 +66,7 @@ public class KundeViewModel implements Serializable{
     private String ort;
     
     
-    @Size(min=1, max=16, message="Die Hausnummer muss 1-16 Zeichen haben")
+    @Size(min=1, max=10, message="Die Hausnummer muss 1-10 Zeichen haben")
     private String hausnummer;
 
     @Size(min=4, max=7, message="Die Postleitzahl muss 4-7 Zeichen haben")
@@ -103,12 +103,15 @@ public class KundeViewModel implements Serializable{
      */
     public String kundenSuchErgebnis(int kundennummer){
         this.kundennummer = kundennummer;
-        if(kundecontroller.findKundeByKundennummer(kundennummer)!=null){
-            setThisValues(kundecontroller.findKundeByKundennummer(kundennummer));
+        if(kundecontroller.findKundeByKundennummer(kundennummer)==null){
+            this.ausgabeNachricht = kundecontroller.kundenSuchErgebnis(kundennummer);
+            return konstanten.Navigation.AUSGABE;
         }
-        
-        this.suchErgebnis = kundecontroller.kundenSuchErgebnis(kundennummer);
-        return konstanten.Navigation.SUCHERGEBNIS;
+        else{
+            setThisValues(kundecontroller.findKundeByKundennummer(kundennummer));
+            this.suchErgebnis = kundecontroller.kundenSuchErgebnis(kundennummer);
+            return konstanten.Navigation.SUCHERGEBNIS;
+        }
     }
     
     /**
@@ -129,16 +132,6 @@ public class KundeViewModel implements Serializable{
     public String checkOut(int kundennummer){
         this.ausgabeNachricht = kundecontroller.checkOut(kundennummer);
         return konstanten.Navigation.AUSGABE;
-    }
-    
-    /**
-     * Speichert die Einträge der Variablen des gesuchten Kunden mithilfe der Funktion setThisValues in den lokalen Variablen.
-     * @param id Es wird die ID des Kunden übergeben, der bearbeitet werden soll.
-     * @return Es wird der String zur Navigation zur KundenBearbeiten-Seite zurückgegeben.
-     */
-    public String zurBearbeitung(long id){
-        setThisValues(kundecontroller.findKundeById(id));
-        return konstanten.Navigation.KUNDENBEARBEITEN;
     }
     
     /**
@@ -238,6 +231,15 @@ public class KundeViewModel implements Serializable{
         vertragslaufzeit = 0;
     }
     
+    /**
+     * Speichert die Einträge der Variablen des gesuchten Kunden mithilfe der Funktion setThisValues in den lokalen Variablen.
+     * @param id Es wird die ID des Kunden übergeben, der bearbeitet werden soll.
+     * @return Es wird der String zur Navigation zur KundenBearbeiten-Seite zurückgegeben.
+     */
+    public String zurBearbeitung(long id){
+        setThisValues(kundecontroller.findKundeById(id));
+        return konstanten.Navigation.KUNDENBEARBEITEN;
+    }
     
     /**
      * Setzt die lokalen Variablen zurück und navigiert zur Checkin-Seite

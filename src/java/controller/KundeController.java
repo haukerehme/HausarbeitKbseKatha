@@ -42,12 +42,6 @@ public class KundeController implements Serializable{
     public KundeController(){
     }
     
-    /**
-     * Initialisiert eine neue Liste von Schränken, indem die schrankController-Funktion initSchrankList aufgerufen wird.
-     */
-    public void initSchrankController(){
-        schrankController.initSchrankList();
-    }
     
     /**
      * Erstellt einen neuen Kunden, indem die persistence-Funktion persist aufgerufen wird.

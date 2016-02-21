@@ -23,6 +23,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
 
 /**
  *
@@ -38,6 +39,7 @@ public class Kunde implements Serializable {
     private int kundennummer;
     private String vorname;
     private String nachname;
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date geburtsdatum;
     private String strasse;
     private String ort;
